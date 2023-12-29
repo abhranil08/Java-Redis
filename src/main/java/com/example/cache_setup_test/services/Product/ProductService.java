@@ -1,13 +1,17 @@
 package com.example.cache_setup_test.services.Product;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.cache_setup_test.repository.ProductReadOnlyDao;
+import com.example.cache_setup_test.utils.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,6 +59,26 @@ public class ProductService implements IProductService{
         }
         log.info("Product Response : {}",productReponseList);
         return productReponseList;
+    }
+
+    public void buildProductCache() throws IOException
+    {
+        List<ProductResponse> productResponseFromDB = fetchAllProduct();
+        Map<String,String> productDetailsMap = new HashMap<>();
+        for(ProductResponse productResponse : productResponseFromDB) {
+            productDetailsMap.put(String.valueOf(productResponse.getId()),JsonUtils.serialize(productResponse));
+        }
+        if(!productDetailsMap.isEmpty())
+        {
+            // put into cache
+            //externalService
+        }
+    }
+
+    @Override
+    public void init() throws IOException
+    {
+        buildProductCache();
     }
     
 }
