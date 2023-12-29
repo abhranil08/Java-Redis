@@ -1,6 +1,8 @@
 package com.example.cache_setup_test.services.Product;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,24 @@ public class ProductService implements IProductService{
         }
         log.info("Product Response : {}",productResponse);
         return productResponse;
+    }
+
+    @Override
+    public List<ProductResponse> fetchAllProduct()
+    {
+        List<Product> productListFromDB = productReadOnlyDao.findAll();
+        List<ProductResponse> productReponseList = new ArrayList<>();
+
+        for(Product product : productListFromDB) {
+            ProductResponse productResponse = new ProductResponse();
+            productResponse.setId(product.getId());
+            productResponse.setName(product.getName());
+            productResponse.setPrice(product.getPrice());
+            productReponseList.add(productResponse);
+        
+        }
+        log.info("Product Response : {}",productReponseList);
+        return productReponseList;
     }
     
 }
